@@ -1,41 +1,38 @@
 # Public Release Checklist
 
+This checklist is the source-first release gate for Codex Wick.
+
 ## Repository hygiene
 
-- [x] Public repository bootstrap is a clean single-root snapshot and does not include private development history
+- [x] Public repository history is independent of private development history
 - [x] Product-facing docs use the Codex Wick name
-- [x] Current source was scanned for obvious API keys, bearer tokens, personal filesystem paths, personal email content, and persisted account IDs
-- [x] Public privacy/security/contribution/distribution docs exist
+- [x] Public bundle metadata uses `io.github.BrianROAI.codexwick` and `Codex Wick contributors`
+- [x] Public privacy, security, contribution, architecture, distribution, and release-readiness docs exist
 - [x] OpenAI non-affiliation notice is present
 - [x] Account IDs are excluded from newly persisted observations
 - [x] MIT license selected
-- [x] Root commit uses a GitHub noreply identity
+- [x] Public commits use the repository's GitHub identity rather than personal email metadata
+- [ ] Exact v0.2.1 public release candidate passes a final secret / PII / local-path scan
 
-## Product acceptance
+## v0.2.1 product acceptance
 
-- [x] Bootstrap snapshot passes `zsh scripts/verify.sh` before publication
-- [ ] Exact remote main passes the Personal Runtime Codex Wick project gate after bootstrap
-- [ ] Compact HUD launches in the intended upper-right position
-- [ ] Opening details hides the HUD
-- [ ] Detail window opens centered
-- [ ] Closing the detail window with X restores the HUD
-- [ ] Light/dark mode are coherent across HUD, detail, and Settings
-- [ ] Credits is blue; dC/dt orange-red; Weekly green; Short purple
-- [ ] In-app mark has exactly two wicks: one lit, one extinguished/smoking
-- [ ] Reduce Motion disables the Wick animation
-- [ ] Live authenticated `account/rateLimits/read` sample renders
-- [ ] Local notification path is accepted
+- [x] Owner-Mac source candidate passed 7/7 core checks
+- [x] Owner-Mac source candidate passed strict concurrency with warnings as errors
+- [x] Owner-Mac fault injection proved a hung first probe is terminated and the same Codex Wick process automatically recovers on the next poll
+- [x] Owner visually accepted Dark-by-default appearance, 1-MIN BURN placement/dynamics, and freshness / STALE presentation
+- [ ] Exact public release-candidate SHA passes `zsh scripts/verify.sh`
+- [ ] Exact public release-candidate SHA passes `zsh scripts/verify-recovery.sh`
+- [ ] Fresh public clone passes the source build/install smoke test
 
 ## Distribution
 
 - [x] Source-first build/install path documented
-- [x] First public release is source-first
+- [x] v0.2.1 remains source-first
 - [ ] If a prebuilt binary is added later, complete Developer ID signing and notarization first
 
 ## Release
 
-- [ ] Complete owner-Mac visual/live acceptance
-- [ ] Change repository visibility from private to public
-- [ ] Tag the approved `v0.2.0` source release
-- [ ] Create the GitHub release
-- [ ] Re-test the public clone/build path
+- [ ] Merge the accepted public v0.2.1 release candidate to `main`
+- [ ] Tag the exact accepted source as `v0.2.1`
+- [ ] Create the GitHub release with source-only assets
+- [ ] Re-test the tagged public clone/build path

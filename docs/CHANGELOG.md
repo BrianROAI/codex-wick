@@ -1,5 +1,27 @@
 # Changelog
 
+## v0.2.1 - 2026-10-04
+
+### Added
+
+- Glanceable 1-minute burn rate beside the hourly burn metric
+- Live "Updated ..." freshness text in the detail view and compact HUD
+- Explicit STALE / RETRY telemetry state when sampling falls behind or fails
+- Reproducible owner-Mac hung-probe recovery verification script
+
+### Fixed
+
+- Replaced the blocking app-server pipe reader with an event-driven, deadline-bounded session
+- A failed or timed-out Codex app-server probe can no longer latch refresh state indefinitely
+- Polling now remains recoverable after a probe timeout instead of requiring an app restart
+
+### Changed
+
+- App-server client identity updated to Codex Wick 0.2.1
+- Bundle identifier standardized on io.github.BrianROAI.codexwick
+- Copyright metadata standardized on Codex Wick contributors
+- Dark mode is now the default for users without a saved appearance preference
+
 ## v0.2.0 - 2026-10-04
 
 ### Added
@@ -14,6 +36,4 @@
 ### Changed
 
 - Product-facing naming standardized on Codex Wick
-- App-server client identity updated to Codex Wick 0.2.0
 - Normalized history no longer persists account IDs
-- Compact HUD balance history now uses the same rolling 24-hour real-time x-axis semantics as the detail chart, with thicker Credits and dC/dt strokes for legibility

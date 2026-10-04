@@ -27,15 +27,17 @@ Codex Wick exists to make that resource pressure visible.
 ## Current capabilities
 
 - Live purchased-credit balance
-- 1-minute and 1-hour drawdown
+- 1-minute drawdown and normalized 1-minute burn rate
 - Hourly burn rate and runway estimate
 - 24-hour balance history with a separately colored dC/dt overlay
 - Weekly and short-window allowance tracking
+- Freshness telemetry with Updated / STALE / RETRY states
+- Self-recovering, deadline-bounded Codex app-server polling
 - Adaptive anomaly detection
 - macOS notifications
 - Menu-bar status
 - Compact always-on-top HUD with centered detail window
-- Light and dark modes
+- Dark mode by default; Light mode remains available and is remembered
 - Animated in-app Wick mark with two rush wicks: one lit, one extinguished and smoking
 - Local-only 30-day history
 - No remote Codex Wick backend
@@ -64,7 +66,7 @@ The current install script builds locally and uses ad-hoc signing when available
 
 ## How it works
 
-Codex Wick starts the locally installed `codex app-server` over stdio, performs initialization, and reads `account/rateLimits/read`. It normalizes only fields needed for local monitoring and stores observations as JSONL. It does not scrape the ChatGPT or Codex UI.
+Codex Wick starts the locally installed `codex app-server` over stdio, performs initialization, and reads `account/rateLimits/read`. Each protocol phase has a bounded deadline; if a probe hangs or fails, Codex Wick tears it down and allows the next polling cycle to recover automatically. It normalizes only fields needed for local monitoring and stores observations as JSONL. It does not scrape the ChatGPT or Codex UI.
 
 ## Local data and privacy
 
