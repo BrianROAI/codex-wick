@@ -22,8 +22,8 @@ Codex Wick is a standalone, local-first macOS dashboard for continuous monitorin
 - Keep the OpenAI non-affiliation notice visible.
 - Do not describe ad-hoc signing as Developer ID signing or notarization.
 - A license must be explicitly selected before public visibility.
-- Keep the public repository history free of personal commit-metadata email exposure.
+- Historical Git author/committer email exposure must be accepted or sanitized before public visibility.
 
 ## Verification
 
-Run `zsh scripts/verify.sh`. On macOS also launch the app and verify a live `account/rateLimits/read` sample before integration or public release.
+Run `zsh scripts/verify.sh`. On macOS also launch the app and verify a live `account/rateLimits/read` sample before integration or public release. For polling/recovery changes, also run `zsh scripts/verify-recovery.sh` on the exact candidate head.

@@ -118,9 +118,9 @@ struct DashboardView: View {
                 .frame(width: 8, height: 8)
 
             VStack(alignment: .leading, spacing: 1) {
-                Text(monitor.anomaly.headline)
+                Text(statusHeadline)
                     .font(.system(size: 13, weight: .semibold, design: .serif))
-                Text(monitor.anomaly.detail)
+                Text(statusDetail)
                     .font(.system(size: 11))
                     .foregroundStyle(WickInk.muted)
                     .lineLimit(1)
@@ -128,10 +128,16 @@ struct DashboardView: View {
 
             Spacer()
 
-            Text(severityLabel)
-                .font(.system(size: 10, weight: .semibold, design: .monospaced))
-                .tracking(1.2)
-                .foregroundStyle(statusInk)
+            VStack(alignment: .trailing, spacing: 1) {
+                Text(severityLabel)
+                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .tracking(1.2)
+                    .foregroundStyle(statusInk)
+
+                Text(monitor.freshnessText(at: monitor.clock))
+                    .font(.system(size: 9, design: .monospaced))
+                    .foregroundStyle(WickInk.muted)
+            }
         }
         .padding(.vertical, 12)
         .overlay(alignment: .bottom) {
@@ -148,6 +154,15 @@ struct DashboardView: View {
                 value: currentCredits,
                 detail: monitor.current?.planType?.uppercased() ?? "BALANCE",
                 accent: WickInk.balance
+            )
+
+            metricDivider
+
+            InkMetric(
+                eyebrow: "1-MIN BURN",
+                value: minuteBurnRateText,
+                detail: "credits / min",
+                accent: WickInk.derivative
             )
 
             metricDivider
@@ -183,7 +198,7 @@ struct DashboardView: View {
         Rectangle()
             .fill(WickInk.hairline)
             .frame(width: 1, height: 72)
-            .padding(.horizontal, 22)
+            .padding(.horizontal, 12)
     }
 
     private var historySection: some View {
@@ -481,6 +496,10 @@ struct DashboardView: View {
         return NumberFormat.credits(monitor.current?.creditBalance)
     }
 
+    private var minuteBurnRateText: String {
+        NumberFormat.rate(monitor.minuteBurnRate)
+    }
+
     private var burnRateText: String {
         guard let rate = monitor.hourlyBurnRate else { return "—" }
         return NumberFormat.compact(rate)
@@ -539,7 +558,31 @@ struct DashboardView: View {
         return "\(totalHours)h"
     }
 
+    private var statusHeadline: String {
+        if monitor.isStale(at: monitor.clock) {
+            return "Telemetry stale"
+        }
+        if monitor.lastError != nil {
+            return "Refresh degraded"
+        }
+        return monitor.anomaly.headline
+    }
+
+    private var statusDetail: String {
+        if let error = monitor.lastError {
+            return "Refresh failed · \(error)"
+        }
+        if monitor.isStale(at: monitor.clock) {
+            return monitor.freshnessText(at: monitor.clock)
+        }
+        return monitor.anomaly.detail
+    }
+
     private var statusInk: Color {
+        if monitor.isStale(at: monitor.clock) {
+            return WickInk.high
+        }
+
         switch monitor.anomaly.severity {
         case .normal: return WickInk.normal
         case .warning: return WickInk.warning
@@ -549,6 +592,13 @@ struct DashboardView: View {
     }
 
     private var severityLabel: String {
+        if monitor.isStale(at: monitor.clock) {
+            return "STALE"
+        }
+        if monitor.lastError != nil {
+            return "RETRY"
+        }
+
         switch monitor.anomaly.severity {
         case .normal: return "NORMAL"
         case .warning: return "WATCH"
@@ -556,6 +606,7 @@ struct DashboardView: View {
         case .critical: return "CRITICAL"
         }
     }
+
 }
 
 private struct InkMetric: View {

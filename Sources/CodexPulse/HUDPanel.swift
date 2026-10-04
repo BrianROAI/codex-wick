@@ -252,7 +252,7 @@ private struct CompactWickView: View {
 
             Spacer()
 
-            VStack(alignment: .trailing, spacing: 2) {
+            VStack(alignment: .trailing, spacing: 1) {
                 Text(resetText)
                     .font(.system(size: 9, weight: .semibold, design: .monospaced))
                     .foregroundStyle(statusColor)
@@ -261,10 +261,14 @@ private struct CompactWickView: View {
                     Circle()
                         .fill(statusColor)
                         .frame(width: 6, height: 6)
-                    Text(monitor.anomaly.severity >= .warning ? "WATCH" : "NORMAL")
+                    Text(statusLabel)
                         .font(.system(size: 8, design: .monospaced))
                         .foregroundStyle(HUDInk.muted)
                 }
+
+                Text(monitor.freshnessCompactText(at: monitor.clock))
+                    .font(.system(size: 7, design: .monospaced))
+                    .foregroundStyle(HUDInk.muted)
             }
         }
     }
@@ -329,12 +333,26 @@ private struct CompactWickView: View {
     }
 
     private var statusColor: Color {
+        if monitor.isStale(at: monitor.clock) {
+            return HUDInk.high
+        }
+
         switch monitor.anomaly.severity {
         case .normal: return HUDInk.normal
         case .warning: return HUDInk.warning
         case .high: return HUDInk.high
         case .critical: return HUDInk.critical
         }
+    }
+
+    private var statusLabel: String {
+        if monitor.isStale(at: monitor.clock) {
+            return "STALE"
+        }
+        if monitor.lastError != nil {
+            return "RETRY"
+        }
+        return monitor.anomaly.severity >= .warning ? "WATCH" : "NORMAL"
     }
 
     private func countdown(to date: Date) -> String {
