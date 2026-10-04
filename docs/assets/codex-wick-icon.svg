@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <rect width="1024" height="1024" rx="220" fill="#F4F1E8"/>
+  <path d="M181 694 C92 478 176 234 390 138 C568 58 792 120 893 289"
+        fill="none" stroke="#161616" stroke-width="34" stroke-linecap="round" opacity=".78"/>
+  <path d="M889 292 C948 410 946 576 884 700 C822 826 704 904 565 921"
+        fill="none" stroke="#6F6B64" stroke-width="13" stroke-linecap="round" opacity=".34"/>
+  <path d="M245 626 C347 579 679 578 790 609 C771 727 665 799 509 803 C356 799 267 735 245 626 Z"
+        fill="#F4F1E8" stroke="#111111" stroke-width="28" stroke-linejoin="round"/>
+  <path d="M244 623 C365 584 680 583 807 613"
+        fill="none" stroke="#111111" stroke-width="24" stroke-linecap="round"/>
+  <path d="M785 608 C829 594 861 599 885 611 C847 620 821 631 790 652"
+        fill="#F4F1E8" stroke="#111111" stroke-width="22" stroke-linejoin="round"/>
+  <path d="M310 628 C415 604 659 604 758 624"
+        fill="none" stroke="#817D75" stroke-width="11" stroke-linecap="round" opacity=".42"/>
+  <path d="M448 654 C531 640 624 617 737 586 C786 573 821 567 851 573"
+        fill="none" stroke="#181818" stroke-width="17" stroke-linecap="round"/>
+  <path d="M470 672 C551 656 636 635 721 610 C754 600 782 593 809 590"
+        fill="none" stroke="#4C4944" stroke-width="12" stroke-linecap="round" opacity=".78"/>
+  <path d="M850 575 C822 533 835 478 870 431 C898 484 901 535 850 575 Z" fill="#171717"/>
+  <path d="M858 554 C848 529 856 505 870 485 C878 509 878 532 858 554 Z" fill="#F4F1E8"/>
+  <circle cx="809" cy="590" r="10" fill="#111111"/>
+  <path d="M813 567 C860 522 800 477 841 425 C880 376 824 339 854 298"
+        fill="none" stroke="#77736C" stroke-width="16" stroke-linecap="round" opacity=".42"/>
+  <rect x="188" y="379" width="92" height="116" rx="10"
+        fill="none" stroke="#A43B2F" stroke-width="10"/>
+  <text x="234" y="426" text-anchor="middle"
+        font-family="Songti SC, STSong, serif" font-size="36" fill="#A43B2F">節</text>
+  <text x="234" y="472" text-anchor="middle"
+        font-family="Songti SC, STSong, serif" font-size="36" fill="#A43B2F">用</text>
+</svg>
