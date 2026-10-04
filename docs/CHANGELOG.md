@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v0.2.0 - 2026-10-04
 
 ### Added
 
@@ -16,3 +16,4 @@
 - Product-facing naming standardized on Codex Wick
 - App-server client identity updated to Codex Wick 0.2.0
 - Normalized history no longer persists account IDs
+- Compact HUD balance history now uses the same rolling 24-hour real-time x-axis semantics as the detail chart, with thicker Credits and dC/dt strokes for legibility

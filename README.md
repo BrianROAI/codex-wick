@@ -53,7 +53,7 @@ Codex Wick does not collect or ask for an OpenAI API key.
 
 ```bash
 git clone https://github.com/BrianROAI/codex-wick.git
-cd codex-credit-monitor
+cd codex-wick
 zsh scripts/verify.sh
 zsh scripts/install.sh
 ```

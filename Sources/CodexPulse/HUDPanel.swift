@@ -288,16 +288,29 @@ private struct CompactWickView: View {
                 Spacer()
             }
 
-            DualSparkline(observations: recentObservations)
+            DualSparkline(
+                observations: recentObservations,
+                xDomain: chartXDomain
+            )
         }
     }
 
     private var recentObservations: [CodexObservation] {
-        Array(
-            monitor.history
-                .suffix(80)
-                .filter { $0.creditBalance != nil }
-        )
+        let cutoff = Date().addingTimeInterval(-24 * 3600)
+        return monitor.history
+            .filter {
+                $0.observedAt >= cutoff && $0.creditBalance != nil
+            }
+            .sorted { $0.observedAt < $1.observedAt }
+    }
+
+    private var chartXDomain: ClosedRange<Date> {
+        let latest = recentObservations.last?.observedAt ?? Date()
+        let earliestAllowed = latest.addingTimeInterval(-24 * 3600)
+        let first = recentObservations.first?.observedAt ?? earliestAllowed
+        let lower = max(first, earliestAllowed)
+        let upper = max(latest, lower.addingTimeInterval(60))
+        return lower...upper
     }
 
     private var balance: String {
@@ -407,6 +420,7 @@ private struct AllowanceTile: View {
 
 private struct DualSparkline: View {
     let observations: [CodexObservation]
+    let xDomain: ClosedRange<Date>
 
     var body: some View {
         Canvas { context, size in
@@ -418,11 +432,12 @@ private struct DualSparkline: View {
             guard balances.count > 1 else { return }
 
             drawSeries(
-                balances.map(\.1),
+                balances,
                 in: context,
                 size: size,
-                color: HUDInk.balance.opacity(0.92),
-                width: 1.35
+                xDomain: xDomain,
+                color: HUDInk.balance.opacity(0.96),
+                width: 2.4
             )
 
             let derivative = smoothedDerivative(balances)
@@ -431,20 +446,26 @@ private struct DualSparkline: View {
                     derivative,
                     in: context,
                     size: size,
-                    color: HUDInk.derivative.opacity(0.86),
-                    width: 1.0
+                    xDomain: xDomain,
+                    color: HUDInk.derivative.opacity(0.92),
+                    width: 1.8
                 )
             }
         }
     }
 
-    private func smoothedDerivative(_ points: [(Date, Double)]) -> [Double] {
-        var raw: [Double] = []
+    private func smoothedDerivative(
+        _ points: [(Date, Double)]
+    ) -> [(Date, Double)] {
+        var raw: [(Date, Double)] = []
 
         for index in 1..<points.count {
             let elapsed = points[index].0.timeIntervalSince(points[index - 1].0) / 3_600
             guard elapsed > 0 else { continue }
-            raw.append((points[index].1 - points[index - 1].1) / elapsed)
+            raw.append((
+                points[index].0,
+                (points[index].1 - points[index - 1].1) / elapsed
+            ))
         }
 
         guard raw.count > 2 else { return raw }
@@ -453,31 +474,39 @@ private struct DualSparkline: View {
             let lower = max(0, index - 2)
             let upper = min(raw.count - 1, index + 2)
             let window = raw[lower...upper]
-            return window.reduce(0, +) / Double(window.count)
+            let average = window.reduce(0) { partial, point in
+                partial + point.1
+            } / Double(window.count)
+            return (raw[index].0, average)
         }
     }
 
     private func drawSeries(
-        _ values: [Double],
+        _ points: [(Date, Double)],
         in context: GraphicsContext,
         size: CGSize,
+        xDomain: ClosedRange<Date>,
         color: Color,
         width: CGFloat
     ) {
-        guard values.count > 1,
-              let low = values.min(),
-              let high = values.max()
+        guard points.count > 1,
+              let low = points.map(\.1).min(),
+              let high = points.map(\.1).max()
         else { return }
 
-        let range = max(high - low, 0.0001)
-        let step = size.width / CGFloat(values.count - 1)
+        let yRange = max(high - low, 0.0001)
+        let xRange = max(
+            xDomain.upperBound.timeIntervalSince(xDomain.lowerBound),
+            60
+        )
         let verticalInset: CGFloat = 4
 
         var path = Path()
 
-        for (index, value) in values.enumerated() {
-            let x = CGFloat(index) * step
-            let normalized = (value - low) / range
+        for (index, point) in points.enumerated() {
+            let elapsed = point.0.timeIntervalSince(xDomain.lowerBound)
+            let x = CGFloat(elapsed / xRange) * size.width
+            let normalized = (point.1 - low) / yRange
             let y = size.height - verticalInset
                 - CGFloat(normalized) * (size.height - verticalInset * 2)
 
